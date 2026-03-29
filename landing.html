@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nuuro Financials — Your Money's Brain</title>
+<meta name="description" content="The AI-powered finance app built for freelancers. Track income, estimate taxes with real brackets, and get advice from an AI that knows your numbers.">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --lime: #c8f57a; --lime2: #a8e050; --bg: #08080a; --surface: #111113; --surface2: #19191d; --border: #252529; --text: #eeeee8; --muted: #7a7a80; --red: #ff6b6b; --yellow: #ffd166; --blue: #7eb8f7; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; font-size: 16px; line-height: 1.6; overflow-x: hidden; }
+  body::after { content:''; position:fixed; inset:0; pointer-events:none; z-index:999; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"); background-repeat:repeat; opacity:0.5; }
+
+  @keyframes fadeUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes float { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-8px); } }
+  @keyframes glow { 0%,100% { box-shadow:0 0 40px rgba(200,245,122,0.1); } 50% { box-shadow:0 0 80px rgba(200,245,122,0.2); } }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+  @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+  .fade-up { animation: fadeUp 0.7s ease both; }
+  .d1{animation-delay:.1s}.d2{animation-delay:.2s}.d3{animation-delay:.3s}.d4{animation-delay:.4s}.d5{animation-delay:.5s}.d6{animation-delay:.6s}
+
+  /* Nav */
+  nav { position:fixed; top:0; left:0; right:0; z-index:90; padding:20px 48px; display:flex; align-items:center; justify-content:space-between; background:rgba(8,8,10,0.8); backdrop-filter:blur(20px); border-bottom:1px solid rgba(255,255,255,0.04); }
+  .nav-logo { font-family:'Outfit',sans-serif; font-size:22px; font-weight:700; color:var(--lime); text-decoration:none; letter-spacing:-0.02em; }
+  .nav-links { display:flex; gap:32px; align-items:center; }
+  .nav-links a { color:var(--muted); text-decoration:none; font-size:14px; font-weight:400; transition:color 0.2s; }
+  .nav-links a:hover { color:var(--text); }
+  .nav-cta { background:var(--lime); color:var(--bg); border:none; padding:10px 24px; border-radius:8px; font-family:'Outfit',sans-serif; font-size:14px; font-weight:600; cursor:pointer; transition:all 0.2s; text-decoration:none; }
+  .nav-cta:hover { background:var(--lime2); transform:translateY(-1px); }
+
+  /* Hero */
+  .hero { min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:140px 24px 80px; position:relative; }
+  .hero-glow { position:absolute; top:5%; left:50%; transform:translateX(-50%); width:700px; height:700px; border-radius:50%; background:radial-gradient(circle,rgba(200,245,122,0.06)0%,transparent 70%); pointer-events:none; }
+  .hero-badge { display:inline-flex; align-items:center; gap:8px; background:var(--surface2); border:1px solid var(--border); border-radius:100px; padding:8px 20px; font-size:13px; color:var(--muted); margin-bottom:32px; }
+  .hero-badge-dot { width:6px; height:6px; border-radius:50%; background:var(--lime); animation:blink 2s infinite; }
+  .hero h1 { font-family:'Instrument Serif',serif; font-size:clamp(52px,8vw,96px); font-weight:400; line-height:1.02; letter-spacing:-0.03em; max-width:800px; margin-bottom:24px; }
+  .hero h1 em { font-style:italic; color:var(--lime); }
+  .hero-sub { font-size:19px; color:var(--muted); max-width:520px; line-height:1.7; margin-bottom:40px; font-weight:300; }
+  .hero-actions { display:flex; gap:16px; align-items:center; margin-bottom:72px; }
+  .btn-primary { background:var(--lime); color:var(--bg); border:none; padding:16px 40px; border-radius:10px; font-family:'Outfit',sans-serif; font-size:16px; font-weight:600; cursor:pointer; transition:all 0.2s; text-decoration:none; animation:glow 3s ease infinite; }
+  .btn-primary:hover { background:var(--lime2); transform:translateY(-2px); }
+  .btn-secondary { color:var(--muted); border:1px solid var(--border); padding:16px 36px; border-radius:10px; font-family:'Outfit',sans-serif; font-size:16px; font-weight:400; cursor:pointer; transition:all 0.2s; text-decoration:none; background:none; }
+  .btn-secondary:hover { color:var(--text); border-color:var(--muted); }
+
+  /* App mockup */
+  .mockup { position:relative; max-width:880px; width:100%; background:var(--surface); border:1px solid var(--border); border-radius:16px; overflow:hidden; animation:float 6s ease infinite; box-shadow:0 40px 120px rgba(0,0,0,0.5),0 0 80px rgba(200,245,122,0.04); }
+  .mockup-bar { display:flex; align-items:center; gap:8px; padding:14px 20px; border-bottom:1px solid var(--border); background:var(--surface2); }
+  .mockup-dot { width:10px; height:10px; border-radius:50%; }
+  .mockup-body { padding:24px; display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:12px; }
+  .m-card { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:16px; }
+  .m-label { font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; font-family:'DM Mono',monospace; margin-bottom:6px; }
+  .m-val { font-size:22px; font-weight:600; font-family:'DM Mono',monospace; }
+  .m-chat { grid-column:1/-1; background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:16px; }
+  .m-chat-head { display:flex; align-items:center; gap:8px; margin-bottom:12px; }
+  .m-chat-dot { width:6px; height:6px; border-radius:50%; background:var(--lime); }
+  .m-msg { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:10px 14px; font-size:12px; line-height:1.5; margin-bottom:8px; max-width:85%; }
+  .m-msg.ai { border-left:2px solid var(--lime); }
+  .m-msg.u { margin-left:auto; border-right:2px solid var(--muted); text-align:right; color:var(--muted); }
+  .m-typing { display:flex; gap:4px; padding:8px 14px; }
+  .m-typing span { width:5px; height:5px; border-radius:50%; background:var(--lime); animation:blink 1.2s ease infinite; }
+  .m-typing span:nth-child(2){animation-delay:.2s} .m-typing span:nth-child(3){animation-delay:.4s}
+
+  /* Sections */
+  section { padding:100px 48px; position:relative; }
+  .s-label { font-family:'DM Mono',monospace; font-size:12px; text-transform:uppercase; letter-spacing:0.15em; color:var(--lime); margin-bottom:16px; }
+  .s-heading { font-family:'Instrument Serif',serif; font-size:clamp(32px,4.5vw,56px); font-weight:400; line-height:1.12; letter-spacing:-0.02em; max-width:700px; margin-bottom:20px; }
+  .s-sub { font-size:17px; color:var(--muted); max-width:560px; line-height:1.7; font-weight:300; margin-bottom:48px; }
+  .centered { text-align:center; }
+  .centered .s-heading, .centered .s-sub { margin-left:auto; margin-right:auto; }
+
+  /* Problem grid */
+  .problem { background:var(--surface); border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
+  .p-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--border); max-width:1100px; margin:0 auto; border-radius:12px; overflow:hidden; }
+  .p-item { background:var(--surface); padding:40px 32px; }
+  .p-num { font-family:'DM Mono',monospace; font-size:48px; font-weight:500; color:var(--lime); opacity:0.25; margin-bottom:12px; }
+  .p-title { font-size:17px; font-weight:600; margin-bottom:8px; }
+  .p-desc { font-size:14px; color:var(--muted); line-height:1.6; }
+
+  /* Features */
+  .f-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:20px; max-width:1000px; }
+  .f-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:36px; transition:all 0.3s; position:relative; overflow:hidden; }
+  .f-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,var(--lime),transparent); opacity:0; transition:opacity 0.3s; }
+  .f-card:hover { border-color:rgba(200,245,122,0.2); transform:translateY(-2px); }
+  .f-card:hover::before { opacity:1; }
+  .f-icon { width:40px; height:40px; border-radius:10px; background:var(--surface2); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:18px; margin-bottom:20px; }
+  .f-name { font-size:17px; font-weight:600; margin-bottom:8px; }
+  .f-desc { font-size:14px; color:var(--muted); line-height:1.6; }
+  .f-hero { grid-column:1/-1; display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:center; background:linear-gradient(135deg,var(--surface)0%,#111816 100%); border-color:rgba(200,245,122,0.15); }
+  .f-hero-visual { background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:20px; font-size:13px; }
+
+  /* Tax showcase */
+  .tax-show { background:var(--surface); border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
+  .tax-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; max-width:1000px; margin:0 auto 32px; }
+  .tax-pill { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:20px; text-align:center; }
+  .tax-pill-val { font-family:'DM Mono',monospace; font-size:24px; font-weight:600; color:var(--lime); }
+  .tax-pill-label { font-size:12px; color:var(--muted); margin-top:4px; }
+  .tax-features { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; max-width:1000px; margin:0 auto; }
+  .tax-feat { display:flex; gap:12px; align-items:flex-start; padding:16px; }
+  .tax-check { color:var(--lime); font-size:18px; flex-shrink:0; margin-top:2px; }
+  .tax-feat-title { font-size:15px; font-weight:500; margin-bottom:4px; }
+  .tax-feat-desc { font-size:13px; color:var(--muted); line-height:1.5; }
+
+  /* Stats */
+  .proof-stats { display:flex; justify-content:center; gap:80px; margin-top:48px; }
+  .proof-num { font-family:'DM Mono',monospace; font-size:48px; font-weight:500; color:var(--lime); }
+  .proof-label { font-size:14px; color:var(--muted); margin-top:4px; }
+
+  /* Quote */
+  .quote { text-align:center; padding:80px 48px; }
+  .q-text { font-family:'Instrument Serif',serif; font-size:clamp(24px,3vw,36px); font-style:italic; max-width:720px; margin:0 auto 20px; line-height:1.4; }
+  .q-attr { font-size:14px; color:var(--muted); }
+
+  /* CTA */
+  .cta { text-align:center; padding:120px 48px; background:radial-gradient(ellipse at center,rgba(200,245,122,0.05)0%,transparent 60%); }
+  .cta h2 { font-family:'Instrument Serif',serif; font-size:clamp(36px,5vw,64px); font-weight:400; margin-bottom:16px; line-height:1.1; }
+  .cta p { font-size:17px; color:var(--muted); margin-bottom:36px; max-width:460px; margin-left:auto; margin-right:auto; }
+
+  /* Footer */
+  footer { padding:40px 48px; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; font-size:13px; color:var(--muted); }
+  footer a { color:var(--muted); text-decoration:none; }
+  footer a:hover { color:var(--text); }
+
+  /* Scroll anim */
+  .reveal { opacity:0; transform:translateY(24px); transition:opacity 0.6s ease,transform 0.6s ease; }
+  .reveal.visible { opacity:1; transform:translateY(0); }
+
+  @media (max-width:768px) {
+    nav { padding:16px 20px; }
+    .nav-links a:not(.nav-cta) { display:none; }
+    section { padding:60px 20px; }
+    .hero { padding:120px 20px 60px; }
+    .hero-actions { flex-direction:column; width:100%; }
+    .btn-primary,.btn-secondary { width:100%; text-align:center; }
+    .mockup-body { grid-template-columns:1fr 1fr; }
+    .p-grid { grid-template-columns:1fr; }
+    .f-grid { grid-template-columns:1fr; }
+    .f-hero { grid-template-columns:1fr; }
+    .tax-grid { grid-template-columns:repeat(2,1fr); }
+    .tax-features { grid-template-columns:1fr; }
+    .proof-stats { flex-direction:column; gap:32px; }
+    footer { flex-direction:column; gap:12px; text-align:center; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="nav-logo">Nuuro Financials</a>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#taxes">Tax engine</a>
+    <a href="#how">How it works</a>
+    <a href="#" class="nav-cta">Try Nuuro free</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-badge fade-up d1"><div class="hero-badge-dot"></div> AI-powered finance for freelancers</div>
+  <h1 class="fade-up d2">Your money's<br><em>brain.</em></h1>
+  <p class="hero-sub fade-up d3">Track income, nail your taxes, and get AI advice that actually knows your numbers. Built for the way freelancers really work.</p>
+  <div class="hero-actions fade-up d4">
+    <a href="#" class="btn-primary">Start for free</a>
+    <a href="#features" class="btn-secondary">See what it does</a>
+  </div>
+
+  <div class="mockup fade-up d5">
+    <div class="mockup-bar">
+      <div class="mockup-dot" style="background:#ff5f57"></div>
+      <div class="mockup-dot" style="background:#ffbd2e"></div>
+      <div class="mockup-dot" style="background:#28c840"></div>
+      <span style="margin-left:auto;font-size:11px;color:var(--muted);font-family:'DM Mono',monospace">nuuro</span>
+    </div>
+    <div class="mockup-body">
+      <div class="m-card"><div class="m-label">Net income</div><div class="m-val" style="color:var(--lime)">$6,840</div></div>
+      <div class="m-card"><div class="m-label">Tax reserve</div><div class="m-val" style="color:var(--yellow)">$1,710</div></div>
+      <div class="m-card"><div class="m-label">Profit margin</div><div class="m-val" style="color:var(--lime)">72%</div></div>
+      <div class="m-card"><div class="m-label">Q2 remaining</div><div class="m-val" style="color:var(--blue)">$428</div></div>
+      <div class="m-chat">
+        <div class="m-chat-head"><div class="m-chat-dot"></div><span style="font-size:11px;color:var(--muted);font-weight:600">Nuuro AI Assistant</span></div>
+        <div class="m-msg u">Should I raise my rate? I'm at $75/hr right now</div>
+        <div class="m-msg ai">Your net this month is $6,840 across 3 clients with a 72% margin. At your current hours, you're averaging $71/hr after expenses. You have room to test $90-95/hr with new clients — your margin supports it and your top client alone accounts for 48% of revenue, so diversifying at a higher rate reduces concentration risk too.</div>
+        <div class="m-typing"><span></span><span></span><span></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="problem">
+  <div class="centered" style="margin-bottom:48px">
+    <div class="s-label">The problem</div>
+    <div class="s-heading" style="margin:0 auto">Freelancing is great.<br>Freelance finances are not.</div>
+  </div>
+  <div class="p-grid">
+    <div class="p-item reveal"><div class="p-num">01</div><div class="p-title">Tax surprise season</div><div class="p-desc">You made $60k this year. You owe $15k in taxes. You have $2k saved. This happens to 1 in 3 freelancers every year.</div></div>
+    <div class="p-item reveal"><div class="p-num">02</div><div class="p-title">Spreadsheet paralysis</div><div class="p-desc">Spreadsheets show what happened. They don't tell you what to do about it. You need answers, not rows and columns.</div></div>
+    <div class="p-item reveal"><div class="p-num">03</div><div class="p-title">Am I even profitable?</div><div class="p-desc">After software, coworking, equipment, and taxes — are you actually making money? Most freelancers don't know their real hourly rate.</div></div>
+  </div>
+</section>
+
+<section id="features">
+  <div class="s-label">Features</div>
+  <div class="s-heading">Everything your spreadsheet<br>wishes it could do</div>
+  <div class="s-sub">Built specifically for irregular income, multiple clients, and quarterly taxes.</div>
+  <div class="f-grid">
+    <div class="f-card f-hero reveal">
+      <div>
+        <div class="f-icon" style="background:var(--lime);color:var(--bg);font-weight:700">AI</div>
+        <div class="f-name" style="font-size:22px;margin-bottom:12px">AI finance assistant</div>
+        <div class="f-desc" style="font-size:15px">Ask anything in plain English. "Can I afford new equipment?" "How much tax do I owe?" It knows your actual numbers and gives specific, actionable advice — not generic tips.</div>
+      </div>
+      <div class="f-hero-visual">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><div style="width:6px;height:6px;border-radius:50%;background:var(--lime)"></div><span style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace">LIVE CONTEXT</span></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--muted);margin-bottom:8px;border-left:2px solid var(--lime);line-height:1.6">
+          <span style="color:var(--lime)">You:</span> What deductions am I missing?<br><br>
+          <span style="color:var(--lime)">Nuuro:</span> You have $3,200/mo in expenses but no home office deduction. If you work from home even part-time, that's ~$1,500/year. Also, a SEP IRA contribution would let you deduct up to 25% of net earnings — at your income level, that's $4,200 you're leaving on the table.
+        </div>
+      </div>
+    </div>
+    <div class="f-card reveal"><div class="f-icon">$</div><div class="f-name">Smart tax engine</div><div class="f-desc">Real 2024 federal brackets, all 50 states, SE tax, standard deduction — not a flat percentage guess. Filing status selector. Quarterly payment tracker. Deadline reminders.</div></div>
+    <div class="f-card reveal"><div class="f-icon">C</div><div class="f-name">Client tracker</div><div class="f-desc">See who pays you most, last payment dates, and revenue concentration risk. Case-insensitive grouping so "Acme" and "acme" merge automatically.</div></div>
+    <div class="f-card reveal"><div class="f-icon">G</div><div class="f-name">Goals & deadlines</div><div class="f-desc">Set income targets, expense caps, or savings goals with target dates. Progress bars update live. Countdown shows days remaining with urgency color-coding.</div></div>
+    <div class="f-card reveal"><div class="f-icon">R</div><div class="f-name">Recurring transactions</div><div class="f-desc">Save monthly subscriptions and retainers. One-click "Log now" instead of retyping the same expenses every month.</div></div>
+    <div class="f-card reveal"><div class="f-icon">I</div><div class="f-name">Invoice generator</div><div class="f-desc">Create professional invoices with line items, due dates, and your branding. Preview in-app, download as PDF. Send to clients in seconds.</div></div>
+    <div class="f-card reveal"><div class="f-icon">D</div><div class="f-name">Deduction finder</div><div class="f-desc">12 common freelancer write-offs you're probably missing — home office, health insurance, SEP IRA, mileage, equipment. Check the ones you claim.</div></div>
+  </div>
+</section>
+
+<section id="taxes" class="tax-show">
+  <div class="centered" style="margin-bottom:40px">
+    <div class="s-label">Tax engine</div>
+    <div class="s-heading" style="margin:0 auto">Taxes done right.<br>Not taxes done vaguely.</div>
+    <div class="s-sub" style="margin:12px auto 0">Most freelance tools use a flat 25-30% estimate. Nuuro Financials uses real 2024 brackets, your actual filing status, and your state's rate.</div>
+  </div>
+  <div class="tax-grid">
+    <div class="tax-pill reveal"><div class="tax-pill-val">7</div><div class="tax-pill-label">Federal brackets</div></div>
+    <div class="tax-pill reveal"><div class="tax-pill-val">50</div><div class="tax-pill-label">States + DC</div></div>
+    <div class="tax-pill reveal"><div class="tax-pill-val">3</div><div class="tax-pill-label">Filing statuses</div></div>
+    <div class="tax-pill reveal"><div class="tax-pill-val">4</div><div class="tax-pill-label">Quarterly periods</div></div>
+  </div>
+  <div class="tax-features">
+    <div class="tax-feat reveal"><div class="tax-check">&#10003;</div><div><div class="tax-feat-title">Quarterly payment tracker</div><div class="tax-feat-desc">Log what you've paid each quarter. See owed vs paid with progress bars so you're never caught off guard.</div></div></div>
+    <div class="tax-feat reveal"><div class="tax-check">&#10003;</div><div><div class="tax-feat-title">Deadline reminders</div><div class="tax-feat-desc">Apr 15, Jun 15, Sep 15, Jan 15 — countdown shows days remaining with urgency color-coding.</div></div></div>
+    <div class="tax-feat reveal"><div class="tax-check">&#10003;</div><div><div class="tax-feat-title">Deduction finder</div><div class="tax-feat-desc">12 common freelancer deductions with descriptions. Check the ones you claim to track what you're writing off.</div></div></div>
+    <div class="tax-feat reveal"><div class="tax-check">&#10003;</div><div><div class="tax-feat-title">Tax summary PDF</div><div class="tax-feat-desc">Generate a full printable report — income, expenses, tax breakdown, quarterly status, deductions — to hand to your CPA.</div></div></div>
+  </div>
+</section>
+
+<section id="how" class="centered">
+  <div class="s-label">Why Nuuro Financials</div>
+  <div class="s-heading" style="margin:0 auto 12px">Built for freelancers<br>who hate spreadsheets</div>
+  <div class="s-sub" style="margin:0 auto">Designed by someone who got tired of watching freelancer friends panic every April.</div>
+  <div class="proof-stats">
+    <div class="reveal"><div class="proof-num">100%</div><div class="proof-label">Free, forever</div></div>
+    <div class="reveal"><div class="proof-num">0</div><div class="proof-label">Ads or upsells</div></div>
+    <div class="reveal"><div class="proof-num">30s</div><div class="proof-label">To get started</div></div>
+    <div class="reveal"><div class="proof-num">1,783</div><div class="proof-label">Lines of code</div></div>
+  </div>
+</section>
+
+<section class="quote">
+  <div class="q-text">"I used to spend 2 hours a month in spreadsheet hell trying to figure out what I owed. Now I just ask Nuuro and it tells me."</div>
+  <div class="q-attr">— Early beta tester, graphic designer</div>
+</section>
+
+<section class="cta">
+  <h2>Your money.<br>Your brain. <em style="font-family:'Instrument Serif',serif;color:var(--lime)">Upgraded.</em></h2>
+  <p>Free. No credit card. Your data stays in your browser.</p>
+  <a href="#" class="btn-primary">Launch Nuuro Financials</a>
+</section>
+
+<footer>
+  <span class="nav-logo" style="font-size:16px">Nuuro Financials</span>
+  <div style="display:flex;gap:24px">
+    <a href="#">GitHub</a>
+    <a href="#">Twitter</a>
+    <a href="#">Feedback</a>
+  </div>
+  <div>Built with Claude AI</div>
+</footer>
+
+<script>
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
